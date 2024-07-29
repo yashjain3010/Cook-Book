@@ -1,8 +1,15 @@
 {
-  "name": "Cook-Book",
+  "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "dev": "npx nodemon",
+    "start": "yarn run build && node ./dist/index.js",
+    "build": "rimraf ./build && tsc",
+    "lint": "npx --eslint --ignore-path .gitignore --ext .js,.ts --fix",
+    "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
@@ -10,9 +17,16 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.21",
     "@types/helmet": "^4.0.0",
     "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.17.0",
+    "@typescript-eslint/parser": "^7.17.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.8.0",
+    "eslint-config-prettier": "^9.1.0",
+    "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
