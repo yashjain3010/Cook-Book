@@ -1,5 +1,14 @@
 import axios from "axios";
-import { Router,Request,Response } from "express";
+import { Router, Request, Response } from "express";
+
+interface Recipe {
+  name: string;
+  instructions: string;
+  thumbnail_image: string;
+  posted_at: string;
+  posted_by: string;
+  ingredients: string[];
+}
 
 const router = Router();
 
@@ -14,31 +23,53 @@ router.get("/search", async (req: Request, res: Response) => {
     const response = await axios.get(
       `${process.env.FORKIFY_API_BASE_URL}/search?q=${query}`
     );
-    res.json(response.data);
+
+    const recipes = response.data.recipes.map((recipe: any) => ({
+      name: recipe.title,
+      instructions: "No instructions provided", 
+      thumbnail_image: recipe.image_url,
+      posted_at: "Unknown",
+      posted_by: recipe.publisher,
+      ingredients: [],
+    }));
+
+    console.log(recipes);
+
+    res.json(recipes);
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
 
+router.get("/get", async (req: Request, res: Response) => {
+  const recipeId = req.query.rId as string;
 
-router.get('/get',async (req : Request,res : Response) => {
-    const recipeId = req.query.rId as string;
-    if(!recipeId){
-        return res.status(400).json({
-            error : "Recipe ID is required"
-        })
-    }
+  if (!recipeId) {
+    return res.status(400).json({ error: "Recipe ID is required" });
+  }
 
-    try{
-        const response = await axios.get(`${process.env.FORKIFY_API_BASE_URL}/get?rId=${recipeId}`)
-        res.json(response.data);
-    }
-    catch(error){
-        res.status(500).json({
-            error : "Something went Wrong"
-        })
-    }
-})
+  try {
+    const response = await axios.get(
+      `${process.env.FORKIFY_API_BASE_URL}/get?rId=${recipeId}`
+    );
+
+    const recipe: Recipe = {
+      name: response.data.recipe.title,
+      instructions: "No instructions provided",
+      thumbnail_image: response.data.recipe.image_url,
+      posted_at: "Unknown",
+      posted_by: response.data.recipe.publisher,
+      ingredients: [], 
+    };
+
+    console.log(recipe); 
+
+    res.json(recipe);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 export default router;
