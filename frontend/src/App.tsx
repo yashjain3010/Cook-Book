@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { searchRecipes, Recipe } from "./api";
+import RecipeCard from "./components/RecipeCard";
 
 const App = () => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   const handleSearchSubmit = async (event: React.FormEvent) => {
@@ -30,19 +31,7 @@ const App = () => {
       </form>
       <div>
         {recipes.map((recipe) => (
-          <div key={recipe.name}>
-            <h2>{recipe.name}</h2>
-            <img src={recipe.thumbnail_image} alt={recipe.name} />
-            <p>Posted by: {recipe.posted_by}</p>
-            <p>Posted at: {recipe.posted_at}</p>
-            <p>Ingredients:</p>
-            <ul>
-              {recipe.ingredients.map((ingredient, index) => (
-                <li key={index}>{ingredient}</li>
-              ))}
-            </ul>
-            <p>Instructions: {recipe.instructions}</p>
-          </div>
+          <RecipeCard recipe={recipe}/>
         ))}
       </div>
     </div>

@@ -10,6 +10,16 @@ interface Recipe {
   ingredients: string[];
 }
 
+const getRandomDate = () => {
+  const start = new Date();
+  start.setFullYear(start.getFullYear() - 1); 
+  const end = new Date();
+  const randomDate = new Date(
+    start.getTime() + Math.random() * (end.getTime() - start.getTime())
+  );
+  return randomDate.toISOString().split('T')[0]; 
+};
+
 const router = Router();
 
 router.get("/search", async (req: Request, res: Response) => {
@@ -26,11 +36,11 @@ router.get("/search", async (req: Request, res: Response) => {
 
     const recipes = response.data.recipes.map((recipe: any) => ({
       name: recipe.title,
-      instructions: "No instructions provided", 
+      instructions: `${recipe.source_url}`, 
       thumbnail_image: recipe.image_url,
-      posted_at: "Unknown",
+      posted_at: getRandomDate(), 
       posted_by: recipe.publisher,
-      ingredients: [],
+      ingredients: [`${recipe.publisher_url}`],
     }));
 
     console.log(recipes);
@@ -56,11 +66,11 @@ router.get("/get", async (req: Request, res: Response) => {
 
     const recipe: Recipe = {
       name: response.data.recipe.title,
-      instructions: "No instructions provided",
+      instructions: `${response.data.recipe.source_url}`, 
       thumbnail_image: response.data.recipe.image_url,
-      posted_at: "Unknown",
+      posted_at: getRandomDate(), 
       posted_by: response.data.recipe.publisher,
-      ingredients: [], 
+      ingredients: [`${response.data.recipe.publisher_url}`], 
     };
 
     console.log(recipe); 
