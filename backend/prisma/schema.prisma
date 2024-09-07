@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id             Int     @id @default(autoincrement())
+  username       String  @unique
+  passwordHash   String  
+  recipes        Recipe[]
+  favorite       Favorite[]
+  refreshToken   String?
+}
+
+
+model Recipe{
+  id            Int   @id @default(autoincrement())
+  name          String
+  instructions  String
+  ingredients   String
+  imageFile     String?
+  postedBy      Int
+  user          User  @relation(fields: [postedBy],references: [id], onDelete: Cascade)
+  favorite      Favorite[]
+}
+
+model Favorite{
+  @@id([userId,recipeId])   
+  userId        Int
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe        Recipe @relation(fileds: [recipeId], references: [id], onDelete: Cascade)
+
+  //In this i do @@id([userId, recipeId]) because it ensure that the user can add recipe only once in favorite.
+}
